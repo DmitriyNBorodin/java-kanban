@@ -32,28 +32,6 @@ public class TaskManager {
         return listOfSubTasks;
     }
 
-
-    void removeAll(TaskGroup group) {
-        if (group == TaskGroup.ORDINARY || group == null) {
-            for (int key : ordinaryTasksMap.keySet()) {
-                ordinaryTasksMap.remove(key);
-            }
-        }
-        if (group == TaskGroup.EPIC || group == null) {
-            for (int key : epicTasksMap.keySet()) {
-                epicTasksMap.remove(key);
-            }
-        }
-        if (group == TaskGroup.SUB || group == null) {
-            for (int key : subTasksMap.keySet()) {
-                subTasksMap.remove(key);
-            }
-        }
-        if (group == null) {
-            taskCounter = 0;
-        }
-    }
-
     Task getTaskByID(int taskID) {
         return ordinaryTasksMap.get(taskID);
     }
@@ -109,7 +87,17 @@ public class TaskManager {
 
     void removeTaskByID(int taskID) {
         ordinaryTasksMap.remove(taskID);
+        if (epicTasksMap.keySet().contains(taskID)) {
+            for (int subTaskID :epicTasksMap.get(taskID).subTasksID) {
+                subTasksMap.remove(subTaskID);
+            }
+        }
         epicTasksMap.remove(taskID);
+        if (subTasksMap.keySet().contains(taskID)) {
+            int currentMainID = subTasksMap.get(taskID).getMainTaskID();
+            epicTasksMap.get(currentMainID).removeSubTask(taskID);
+            epicTasksMap.get(currentMainID).calculateStatus();
+        }
         subTasksMap.remove(taskID);
     }
 

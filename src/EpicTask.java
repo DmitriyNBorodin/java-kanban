@@ -3,7 +3,6 @@ import java.util.ArrayList;
 public class EpicTask extends Task {
     ArrayList<Integer> subTasksID = new ArrayList<>();
     ArrayList<Integer> incompletedSubTasksID = new ArrayList<>();
-    private TaskGroup group = TaskGroup.EPIC;
 
     public EpicTask(String taskName, String taskDescription, TaskStatus status) {
 
@@ -18,6 +17,10 @@ public class EpicTask extends Task {
         if (incompletedSubTasksID.contains(subTaskID)) {
             incompletedSubTasksID.remove((Integer)subTaskID);
         }
+    }
+    public void removeSubTask(int subTaskID) {
+        subTasksID.remove((Integer)subTaskID);
+        incompletedSubTasksID.remove((Integer)subTaskID);
     }
     public void calculateStatus() {
         if (subTasksID.size()==0||subTasksID.size()==incompletedSubTasksID.size()) {

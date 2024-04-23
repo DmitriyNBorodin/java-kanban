@@ -5,7 +5,7 @@ public class Task {
     private String taskName;
     private String taskDescription;
     protected TaskStatus status;
-    private TaskGroup group = TaskGroup.ORDINARY;
+
 
 
     public Task(String taskName, String taskDescription, TaskStatus status) {
@@ -44,7 +44,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{group=" + group + ", id=" + taskID + ", name=" + taskName + ", description length=" +
+        return "Task{" + this.getClass() + ", id=" + taskID + ", name=" + taskName + ", description_length=" +
                 taskDescription.length() + ", status=" + status + "}";
     }
 }
