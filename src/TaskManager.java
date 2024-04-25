@@ -5,106 +5,106 @@ import java.util.Map;
 public class TaskManager {
     private int taskCounter = 0;
     Map<Integer, Task> ordinaryTasksMap = new HashMap<>();
-    Map<Integer, EpicTask> epicTasksMap = new HashMap<>();
+    Map<Integer, Epic> epicsMap = new HashMap<>();
     Map<Integer, SubTask> subTasksMap = new HashMap<>();
 
     ArrayList<Task> getListOfTasks() {
         ArrayList<Task> listOfTasks = new ArrayList<>();
-        for (int id: ordinaryTasksMap.keySet()) {
+        for (int id : ordinaryTasksMap.keySet()) {
             listOfTasks.add(ordinaryTasksMap.get(id));
         }
         return listOfTasks;
     }
 
-    ArrayList<EpicTask> getListOfEpicTasks() {
-        ArrayList<EpicTask> listOfEpicTasks = new ArrayList<>();
-        for (int id: epicTasksMap.keySet()) {
-            listOfEpicTasks.add(epicTasksMap.get(id));
+    ArrayList<Epic> getListOfEpics() {
+        ArrayList<Epic> listOfEpics = new ArrayList<>();
+        for (int id : epicsMap.keySet()) {
+            listOfEpics.add(epicsMap.get(id));
         }
-        return listOfEpicTasks;
+        return listOfEpics;
     }
 
     ArrayList<SubTask> getListOfSubTasks() {
         ArrayList<SubTask> listOfSubTasks = new ArrayList<>();
-        for (int id: subTasksMap.keySet()) {
+        for (int id : subTasksMap.keySet()) {
             listOfSubTasks.add(subTasksMap.get(id));
         }
         return listOfSubTasks;
     }
 
-    Task getTaskByID(int taskID) {
-        return ordinaryTasksMap.get(taskID);
+    Task getTaskById(int taskId) {
+        return ordinaryTasksMap.get(taskId);
     }
 
-    EpicTask getEpicTaskByID(int taskID) {
-        return epicTasksMap.get(taskID);
+    Epic getEpicById(int taskID) {
+        return epicsMap.get(taskID);
     }
 
-    SubTask getSubTaskByID(int taskID) {
+    SubTask getSubTaskById(int taskID) {
         return subTasksMap.get(taskID);
     }
 
     public void addNewTask(Task task) {
-        task.setTaskID(taskCounter);
+        task.setTaskId(taskCounter);
         ordinaryTasksMap.put(taskCounter, task);
         taskCounter++;
     }
 
-    public void addNewEpicTask(EpicTask task) {
-        task.setTaskID(taskCounter);
-        epicTasksMap.put(taskCounter, task);
+    public void addNewEpic(Epic task) {
+        task.setTaskId(taskCounter);
+        epicsMap.put(taskCounter, task);
         taskCounter++;
     }
 
     public void addNewSubTask(SubTask task) {
-        task.setTaskID(taskCounter);
+        task.setTaskId(taskCounter);
         subTasksMap.put(taskCounter, task);
-        EpicTask currentMain = epicTasksMap.get(task.getMainTaskID());
+        Epic currentMain = epicsMap.get(task.getMainTaskId());
         currentMain.setSubTask(taskCounter);
         currentMain.calculateStatus();
         taskCounter++;
     }
 
     public void refreshTask(Task task) {
-        ordinaryTasksMap.put(task.getTaskID(), task);
+        ordinaryTasksMap.put(task.getTaskId(), task);
     }
 
-    public void refreshEpicTask(EpicTask task) {
-        epicTasksMap.put(task.getTaskID(), task);
+    public void refreshEpic(Epic task) {
+        epicsMap.put(task.getTaskId(), task);
     }
 
     public void refreshSubTask(SubTask task) {
-        int refreshingTaskID = task.getTaskID();
-        int mainTaskID = task.getMainTaskID();
-        subTasksMap.put(refreshingTaskID, task);
-        EpicTask currentMain = epicTasksMap.get(mainTaskID);
+        int refreshingTaskId = task.getTaskId();
+        int mainTaskId = task.getMainTaskId();
+        subTasksMap.put(refreshingTaskId, task);
+        Epic currentMain = epicsMap.get(mainTaskId);
         if (task.getStatus() == TaskStatus.DONE) {
-            currentMain.completeSubTask(refreshingTaskID);
+            currentMain.completeSubTask(refreshingTaskId);
         }
         currentMain.calculateStatus();
     }
 
 
-    void removeTaskByID(int taskID) {
-        ordinaryTasksMap.remove(taskID);
-        if (epicTasksMap.keySet().contains(taskID)) {
-            for (int subTaskID :epicTasksMap.get(taskID).subTasksID) {
-                subTasksMap.remove(subTaskID);
+    void removeTaskById(int taskId) {
+        ordinaryTasksMap.remove(taskId);
+        if (epicsMap.keySet().contains(taskId)) {
+            for (int subTaskId : epicsMap.get(taskId).subTasksId) {
+                subTasksMap.remove(subTaskId);
             }
         }
-        epicTasksMap.remove(taskID);
-        if (subTasksMap.keySet().contains(taskID)) {
-            int currentMainID = subTasksMap.get(taskID).getMainTaskID();
-            epicTasksMap.get(currentMainID).removeSubTask(taskID);
-            epicTasksMap.get(currentMainID).calculateStatus();
+        epicsMap.remove(taskId);
+        if (subTasksMap.keySet().contains(taskId)) {
+            int currentMainId = subTasksMap.get(taskId).getMainTaskId();
+            epicsMap.get(currentMainId).removeSubTask(taskId);
+            epicsMap.get(currentMainId).calculateStatus();
         }
-        subTasksMap.remove(taskID);
+        subTasksMap.remove(taskId);
     }
 
-    ArrayList<SubTask> getAllSubTasks (int epicTaskID) {
+    ArrayList<SubTask> getAllSubTasks(int EpicId) {
         ArrayList<SubTask> subTasksList = new ArrayList<>();
-        for (int subTaskID: epicTasksMap.get(epicTaskID).subTasksID) {
-            subTasksList.add(subTasksMap.get(subTaskID));
+        for (int subTaskId : epicsMap.get(EpicId).subTasksId) {
+            subTasksList.add(subTasksMap.get(subTaskId));
         }
         return subTasksList;
     }

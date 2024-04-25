@@ -1,14 +1,14 @@
 public class SubTask extends Task {
-    private int mainTaskID;
+    private int mainTaskId;
 
 
-    SubTask (String taskName, String taskDescription, TaskStatus status, int mainTaskID) {
+    SubTask(String taskName, String taskDescription, TaskStatus status, int mainTaskId) {
         super(taskName, taskDescription, status);
-        this.mainTaskID = mainTaskID;
+        this.mainTaskId = mainTaskId;
     }
 
-    public int getMainTaskID() {
-        return mainTaskID;
+    public int getMainTaskId() {
+        return mainTaskId;
     }
 
 }
