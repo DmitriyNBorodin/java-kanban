@@ -1,6 +1,8 @@
+package TaskManager;
+
 import java.util.Objects;
 
-public class Task {
+public class Task implements Cloneable{
     private int taskId;
     private String taskName;
     private String taskDescription;
@@ -16,7 +18,7 @@ public class Task {
         return taskId;
     }
 
-    public void setTaskId(int taskID) {
+    public void setTaskId(int taskId) {
         this.taskId = taskId;
     }
 
@@ -32,6 +34,10 @@ public class Task {
         return taskName;
     }
 
+    public String getTaskDescription() {
+        return taskDescription;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -42,7 +48,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" + this.getClass() + ", id=" + taskId + ", name=" + taskName + ", description_length=" +
+        return "Utilities.Task{" + this.getClass() + ", id=" + taskId + ", name=" + taskName + ", description_length=" +
                 taskDescription.length() + ", status=" + status + "}";
+    }
+
+    @Override
+    public Task clone() throws CloneNotSupportedException{
+        return (Task) super.clone();
     }
 }

@@ -1,14 +1,20 @@
+package TaskManager;
+
+import HistoryManager.InMemoryHistoryManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TaskManager {
+public class InMemoryTaskManager implements TaskManager {
     private int taskCounter = 0;
     Map<Integer, Task> ordinaryTasksMap = new HashMap<>();
     Map<Integer, Epic> epicsMap = new HashMap<>();
     Map<Integer, SubTask> subTasksMap = new HashMap<>();
+    private InMemoryHistoryManager taskHistory = new InMemoryHistoryManager();
 
-    ArrayList<Task> getListOfTasks() {
+    @Override
+    public ArrayList<Task> getListOfTasks() {
         ArrayList<Task> listOfTasks = new ArrayList<>();
         for (int id : ordinaryTasksMap.keySet()) {
             listOfTasks.add(ordinaryTasksMap.get(id));
@@ -16,7 +22,8 @@ public class TaskManager {
         return listOfTasks;
     }
 
-    ArrayList<Epic> getListOfEpics() {
+    @Override
+    public ArrayList<Epic> getListOfEpics() {
         ArrayList<Epic> listOfEpics = new ArrayList<>();
         for (int id : epicsMap.keySet()) {
             listOfEpics.add(epicsMap.get(id));
@@ -24,7 +31,8 @@ public class TaskManager {
         return listOfEpics;
     }
 
-    ArrayList<SubTask> getListOfSubTasks() {
+    @Override
+    public ArrayList<SubTask> getListOfSubTasks() {
         ArrayList<SubTask> listOfSubTasks = new ArrayList<>();
         for (int id : subTasksMap.keySet()) {
             listOfSubTasks.add(subTasksMap.get(id));
@@ -32,30 +40,40 @@ public class TaskManager {
         return listOfSubTasks;
     }
 
-    Task getTaskById(int taskId) {
+    @Override
+    public Task getTaskById(int taskId) throws CloneNotSupportedException {
+        taskHistory.add(ordinaryTasksMap.get(taskId));
         return ordinaryTasksMap.get(taskId);
     }
 
-    Epic getEpicById(int taskID) {
-        return epicsMap.get(taskID);
+    @Override
+    public Epic getEpicById(int taskId) throws CloneNotSupportedException {
+        taskHistory.add(epicsMap.get(taskId));
+        return epicsMap.get(taskId);
+
     }
 
-    SubTask getSubTaskById(int taskID) {
-        return subTasksMap.get(taskID);
+    @Override
+    public SubTask getSubTaskById(int taskId) throws CloneNotSupportedException {
+        taskHistory.add(ordinaryTasksMap.get(taskId));
+        return subTasksMap.get(taskId);
     }
 
+    @Override
     public void addNewTask(Task task) {
         task.setTaskId(taskCounter);
         ordinaryTasksMap.put(taskCounter, task);
         taskCounter++;
     }
 
+    @Override
     public void addNewEpic(Epic task) {
         task.setTaskId(taskCounter);
         epicsMap.put(taskCounter, task);
         taskCounter++;
     }
 
+    @Override
     public void addNewSubTask(SubTask task) {
         task.setTaskId(taskCounter);
         subTasksMap.put(taskCounter, task);
@@ -65,14 +83,17 @@ public class TaskManager {
         taskCounter++;
     }
 
+    @Override
     public void refreshTask(Task task) {
         ordinaryTasksMap.put(task.getTaskId(), task);
     }
 
+    @Override
     public void refreshEpic(Epic task) {
         epicsMap.put(task.getTaskId(), task);
     }
 
+    @Override
     public void refreshSubTask(SubTask task) {
         int refreshingTaskId = task.getTaskId();
         int mainTaskId = task.getMainTaskId();
@@ -83,17 +104,26 @@ public class TaskManager {
         }
         currentMain.calculateStatus();
     }
+    @Override
+    public void removeAllTasks() {
+        for (int i = 0; i < taskCounter; i++) {
+            removeTaskById(i);
+        }
+        taskCounter = 0;
+        taskHistory.cleanHistory();
+    }
 
 
-    void removeTaskById(int taskId) {
+    @Override
+    public void removeTaskById(int taskId) {
         ordinaryTasksMap.remove(taskId);
-        if (epicsMap.keySet().contains(taskId)) {
+        if (epicsMap.containsKey(taskId)) {
             for (int subTaskId : epicsMap.get(taskId).subTasksId) {
                 subTasksMap.remove(subTaskId);
             }
         }
         epicsMap.remove(taskId);
-        if (subTasksMap.keySet().contains(taskId)) {
+        if (subTasksMap.containsKey(taskId)) {
             int currentMainId = subTasksMap.get(taskId).getMainTaskId();
             epicsMap.get(currentMainId).removeSubTask(taskId);
             epicsMap.get(currentMainId).calculateStatus();
@@ -101,7 +131,8 @@ public class TaskManager {
         subTasksMap.remove(taskId);
     }
 
-    ArrayList<SubTask> getAllSubTasks(int EpicId) {
+    @Override
+    public ArrayList<SubTask> getAllSubTasks(int EpicId) {
         ArrayList<SubTask> subTasksList = new ArrayList<>();
         for (int subTaskId : epicsMap.get(EpicId).subTasksId) {
             subTasksList.add(subTasksMap.get(subTaskId));
@@ -109,4 +140,11 @@ public class TaskManager {
         return subTasksList;
     }
 
+    public ArrayList<Task> getHistory() {
+        return taskHistory.getDefaultHistory();
+    }
+
+
 }
+
+
