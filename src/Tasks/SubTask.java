@@ -1,16 +1,16 @@
-package TaskManager;
+package Tasks;
 
 public class SubTask extends Task {
-    private int mainTaskId;
+    private int epicId;
 
 
     public SubTask(String taskName, String taskDescription, TaskStatus status, int mainTaskId) {
         super(taskName, taskDescription, status);
-        this.mainTaskId = mainTaskId;
+        this.epicId = mainTaskId;
     }
 
     public int getMainTaskId() {
-        return mainTaskId;
+        return epicId;
     }
 
 }

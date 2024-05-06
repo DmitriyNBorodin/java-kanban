@@ -1,4 +1,7 @@
-import TaskManager.*;
+import Managers.InMemoryTaskManager;
+import Managers.ManagerUtils;
+import Managers.TaskManager;
+import Tasks.*;
 import org.junit.jupiter.api.*;
 
 class TaskManagerTest {

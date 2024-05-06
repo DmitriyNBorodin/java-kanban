@@ -1,10 +1,15 @@
-package TaskManager;
+package Managers;
 
-import HistoryManager.InMemoryHistoryManager;
+import Tasks.Epic;
+import Tasks.SubTask;
+import Tasks.Task;
+import Tasks.TaskStatus;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class InMemoryTaskManager implements TaskManager {
     private int taskCounter = 0;
@@ -104,6 +109,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         currentMain.calculateStatus();
     }
+
     @Override
     public void removeAllTasks() {
         for (int i = 0; i < taskCounter; i++) {
@@ -118,7 +124,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeTaskById(int taskId) {
         ordinaryTasksMap.remove(taskId);
         if (epicsMap.containsKey(taskId)) {
-            for (int subTaskId : epicsMap.get(taskId).subTasksId) {
+            for (int subTaskId : epicsMap.get(taskId).getSubTasksId()) {
                 subTasksMap.remove(subTaskId);
             }
         }
@@ -134,13 +140,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<SubTask> getAllSubTasks(int EpicId) {
         ArrayList<SubTask> subTasksList = new ArrayList<>();
-        for (int subTaskId : epicsMap.get(EpicId).subTasksId) {
+        for (int subTaskId : epicsMap.get(EpicId).getSubTasksId()) {
             subTasksList.add(subTasksMap.get(subTaskId));
         }
         return subTasksList;
     }
 
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         return taskHistory.getDefaultHistory();
     }
 

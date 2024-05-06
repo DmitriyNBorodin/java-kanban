@@ -1,20 +1,21 @@
-package HistoryManager;
+package Managers;
 
-import HistoryManager.HistoryManager;
-import TaskManager.Task;
+import Tasks.Task;
 
+import java.util.List;
 import java.util.ArrayList;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private ArrayList<Task> inMemoryHistory =  new ArrayList<>();
+    private List<Task> inMemoryHistory = new ArrayList<>();
+
     @Override
-    public ArrayList<Task> getDefaultHistory() {
+    public List<Task> getDefaultHistory() {
         return inMemoryHistory;
     }
 
     @Override
     public void add(Task task) throws CloneNotSupportedException {
-        if(task != null) {
+        if (task != null) {
             if (inMemoryHistory.size() >= 10) {
                 inMemoryHistory.removeFirst();
             }

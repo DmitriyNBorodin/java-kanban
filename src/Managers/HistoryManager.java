@@ -1,11 +1,11 @@
-package HistoryManager;
+package Managers;
 
-import TaskManager.Task;
+import Tasks.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface HistoryManager {
-    ArrayList<Task> getDefaultHistory();
+    List<Task> getDefaultHistory();
 
     void add(Task task) throws CloneNotSupportedException;
 

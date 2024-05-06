@@ -1,9 +1,9 @@
-package TaskManager;
+package Tasks;
 
 import java.util.Objects;
 
-public class Task implements Cloneable{
-    private int taskId;
+public class Task implements Cloneable {
+    private int Id;
     private String taskName;
     private String taskDescription;
     protected TaskStatus status;
@@ -15,11 +15,11 @@ public class Task implements Cloneable{
     }
 
     public int getTaskId() {
-        return taskId;
+        return Id;
     }
 
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
+    public void setTaskId(int Id) {
+        this.Id = Id;
     }
 
     public TaskStatus getStatus() {
@@ -43,17 +43,17 @@ public class Task implements Cloneable{
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task anotherTask = (Task) obj;
-        return Objects.equals(taskId, anotherTask.taskId);
+        return Objects.equals(Id, anotherTask.Id);
     }
 
     @Override
     public String toString() {
-        return "Utilities.Task{" + this.getClass() + ", id=" + taskId + ", name=" + taskName + ", description_length=" +
+        return "Utilities.Task{" + this.getClass() + ", id=" + Id + ", name=" + taskName + ", description_length=" +
                 taskDescription.length() + ", status=" + status + "}";
     }
 
     @Override
-    public Task clone() throws CloneNotSupportedException{
+    public Task clone() throws CloneNotSupportedException {
         return (Task) super.clone();
     }
 }
