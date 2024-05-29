@@ -1,10 +1,9 @@
-import Managers.InMemoryTaskManager;
 import Managers.ManagerUtils;
 import Managers.TaskManager;
 import Tasks.*;
 import org.junit.jupiter.api.*;
 
-class TaskManagerTest {
+class TaskTest {
     Task testTask = new Task("Test1", "anything", TaskStatus.NEW);
     Epic testEpic = new Epic("Epic1", "anything2", TaskStatus.NEW);
     SubTask testSub1 = new SubTask("Sub1", "nothing", TaskStatus.NEW, 0);
@@ -13,7 +12,7 @@ class TaskManagerTest {
 
     @BeforeAll
     static void taskManagerCreationTest() {
-        manager = (InMemoryTaskManager) ManagerUtils.getDefault();
+        manager = ManagerUtils.getDefault();
         Assertions.assertNotNull(manager, "Не удалось создать объект TaskManager");
     }
 
@@ -68,14 +67,5 @@ class TaskManagerTest {
         manager.removeTaskById(0);
         Assertions.assertNull(manager.getEpicById(0), "Не удалось удалить эпик");
     }
-
-    @Test
-    void historyManagerTest() throws CloneNotSupportedException {
-        manager.addNewTask(testTask);
-        manager.getTaskById(0);
-        Assertions.assertNotNull(manager.getHistory(), "Не удалось получить историю просмотров");
-        manager.removeTaskById(0);
-        Assertions.assertEquals(manager.getHistory().get(0).getTaskName(), testTask.getTaskName(),
-                "Задача не сохранилась в истории");
-    }
 }
+
