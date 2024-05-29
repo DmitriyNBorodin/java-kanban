@@ -1,9 +1,9 @@
-package Managers;
+package managers;
 
-import Tasks.Epic;
-import Tasks.SubTask;
-import Tasks.Task;
-import Tasks.TaskStatus;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+import tasks.TaskStatus;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SubTask getSubTaskById(int taskId) throws CloneNotSupportedException {
-        taskHistory.add(ordinaryTasksMap.get(taskId));
+        taskHistory.add(subTasksMap.get(taskId));
         return subTasksMap.get(taskId);
     }
 
@@ -126,6 +126,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicsMap.containsKey(taskId)) {
             for (int subTaskId : epicsMap.get(taskId).getSubTasksId()) {
                 subTasksMap.remove(subTaskId);
+                taskHistory.removeTask(subTaskId);
             }
         }
         epicsMap.remove(taskId);
@@ -135,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicsMap.get(currentMainId).calculateStatus();
         }
         subTasksMap.remove(taskId);
+        taskHistory.removeTask(taskId);
     }
 
     @Override
