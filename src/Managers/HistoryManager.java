@@ -10,4 +10,6 @@ public interface HistoryManager {
     void add(Task task) throws CloneNotSupportedException;
 
     void cleanHistory();
+
+    void removeTask(int id);
 }
