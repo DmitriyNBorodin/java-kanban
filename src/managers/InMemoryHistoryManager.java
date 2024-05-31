@@ -1,6 +1,7 @@
 package managers;
 
 import tasks.Task;
+import tasks.TaskNode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,13 +15,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getDefaultHistory() {
-        ArrayList<Task> history = new ArrayList<>();
-        if (headNode != null) {
-            TaskNode currentNode = headNode;
-            while (currentNode != null) {
-                history.add(currentNode.taskInHistory);
-                currentNode = currentNode.nextNode;
-            }
+        List<Task> history = new ArrayList<>();
+        if (headNode != null) for (TaskNode x = headNode; x != null; x = x.getNextNode()) {
+            history.add(x.getTaskInHistory());
         }
         return history;
     }
@@ -36,7 +33,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 headNode = tailNode = newNode;
             } else {
                 newNode = new TaskNode(clonedTask, tailNode, null);
-                tailNode.nextNode = newNode;
+                tailNode.setNextNode(newNode);
                 tailNode = newNode;
             }
             inMemoryHistory.put(clonedTask.getTaskId(), newNode);
@@ -45,7 +42,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void cleanHistory() {
-        inMemoryHistory = new HashMap<>();
+        inMemoryHistory.clear();
         headNode = tailNode = null;
     }
 
@@ -55,22 +52,22 @@ public class InMemoryHistoryManager implements HistoryManager {
         inMemoryHistory.remove(id);
     }
 
-    void removeNode(int id) {
+    private void removeNode(int id) {
         if (inMemoryHistory.containsKey(id)) {
             TaskNode vanishingNode = inMemoryHistory.get(id);
             if (vanishingNode.equals(headNode)) {
-                headNode = headNode.nextNode;
+                headNode = headNode.getNextNode();
                 if (headNode != null) {
-                    headNode.previousNode = null;
+                    headNode.setPreviousNode(null);
                 }
             } else if (vanishingNode.equals(tailNode)) {
-                tailNode = tailNode.previousNode;
+                tailNode = tailNode.getPreviousNode();
                 if (tailNode != null) {
-                    tailNode.nextNode = null;
+                    tailNode.setNextNode(null);
                 }
             } else {
-                vanishingNode.previousNode.nextNode = vanishingNode.nextNode;
-                vanishingNode.nextNode.previousNode = vanishingNode.previousNode;
+                vanishingNode.getPreviousNode().setNextNode(vanishingNode.getNextNode());
+                vanishingNode.getNextNode().setPreviousNode(vanishingNode.getPreviousNode());
             }
         }
     }
