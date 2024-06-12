@@ -48,8 +48,7 @@ public class Task implements Cloneable {
 
     @Override
     public String toString() {
-        return "Utilities.Task{" + this.getClass() + ", id=" + id + ", name=" + taskName + ", description_length=" +
-                taskDescription.length() + ", status=" + status + "}";
+        return "Task," + id + "," + taskName + "," + taskDescription + "," + status;
     }
 
     @Override
