@@ -31,6 +31,8 @@ class TaskTest {
         Assertions.assertEquals(manager.getTaskById(0), controlTask,
                 "Задачи с одинаковым ID считаются разными");
         Assertions.assertNotNull(manager.getListOfTasks(), "Не удается получить список задач");
+        Assertions.assertEquals(1, manager.getListOfTasks().size(),
+                "Некорректное количество задач в списке");
         Assertions.assertEquals(manager.getTaskById(0).getTaskName(), testTask.getTaskName(),
                 "При добавлении задачи изменилось её название");
         Assertions.assertEquals(manager.getTaskById(0).getTaskDescription(), testTask.getTaskDescription(),
