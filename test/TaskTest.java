@@ -24,6 +24,7 @@ class TaskTest {
 
     @Test
     void tasksTest() throws CloneNotSupportedException {
+        TaskManager manager = new InMemoryTaskManager();
         manager.addNewTask(testTask);
         Task controlTask = new Task("control1", "controlText", TaskStatus.NEW);
         controlTask.setTaskId(0);
