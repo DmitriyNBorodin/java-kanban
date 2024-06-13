@@ -29,7 +29,7 @@ class   FileBackupTest {
         writeTestManager.addNewTask(test3);
         FileBackedTaskManager readTestManager = new FileBackedTaskManager("TestDataBase.txt");
         readTestManager.loadFromFile();
-        Assertions.assertEquals(3, readTestManager.getListOfTasks().size(), "Не удалось загрузить задачи");
+        Assertions.assertEquals(readTestManager.getListOfTasks().size(), 3, "Не удалось загрузить задачи");
         writeTestManager.removeAllTasks();
         readTestManager.removeAllTasks();
     }
