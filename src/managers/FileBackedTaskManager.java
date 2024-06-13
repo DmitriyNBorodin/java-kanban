@@ -65,54 +65,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                             currentMain.completeSubTask(uploadingSubId);
                         }
                         taskCounter = ++uploadingSubId;
-                    }
                 }
-            } catch(FileNotFoundException ex){
-                Files.createFile(Path.of(dataBase));
-            } catch(IOException ex){
-                throw new ManagerSaveException("Не удалось загрузить задачи");
             }
-        }
-
-        @Override
-        public void addNewTask (Task task){
-            super.addNewTask(task);
-            save();
-        }
-
-        @Override
-        public void addNewEpic (Epic epic){
-            super.addNewEpic(epic);
-            save();
-        }
-
-        @Override
-        public void addNewSubTask (SubTask subTask){
-            super.addNewSubTask(subTask);
-            save();
-        }
-
-        @Override
-        public void refreshTask (Task task){
-            super.refreshTask(task);
-            save();
-        }
-
-        @Override
-        public void refreshEpic (Epic epic){
-            super.refreshEpic(epic);
-            save();
-        }
-
-        @Override
-        public void refreshSubTask (SubTask subTask){
-            super.refreshSubTask(subTask);
-            save();
-        }
-
-        @Override
-        public void removeAllTasks () {
-            super.removeAllTasks();
-            save();
+        } catch (FileNotFoundException ex) {
+            Files.createFile(Path.of(dataBase));
+        } catch (IOException ex) {
+            throw new ManagerSaveException("Не удалось загрузить задачи");
         }
     }
+
+    @Override
+    public void addNewTask(Task task) {
+        super.addNewTask(task);
+        save();
+    }
+
+    @Override
+    public void addNewEpic(Epic epic) {
+        super.addNewEpic(epic);
+        save();
+    }
+
+    @Override
+    public void addNewSubTask(SubTask subTask) {
+        super.addNewSubTask(subTask);
+        save();
+    }
+
+    @Override
+    public void refreshTask(Task task) {
+        super.refreshTask(task);
+        save();
+    }
+
+    @Override
+    public void refreshEpic(Epic epic) {
+        super.refreshEpic(epic);
+        save();
+    }
+
+    @Override
+    public void refreshSubTask(SubTask subTask) {
+        super.refreshSubTask(subTask);
+        save();
+    }
+
+    @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        save();
+    }
+}
