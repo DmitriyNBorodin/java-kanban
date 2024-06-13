@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-class FileBackupTest {
+class   FileBackupTest {
     @Test
     void fileCreationTest() throws IOException {
         FileBackedTaskManager manager = new FileBackedTaskManager("CreationTestDataBase.txt");
@@ -29,7 +29,9 @@ class FileBackupTest {
         writeTestManager.addNewTask(test3);
         FileBackedTaskManager readTestManager = new FileBackedTaskManager("TestDataBase.txt");
         readTestManager.loadFromFile();
-        Assertions.assertEquals(readTestManager.getListOfTasks().size(), 3, "Не удалось загрузить задачи");
+        Assertions.assertEquals(3, readTestManager.getListOfTasks().size(), "Не удалось загрузить задачи");
+        writeTestManager.removeAllTasks();
+        readTestManager.removeAllTasks();
     }
 
     @AfterAll
