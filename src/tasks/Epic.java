@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Epic extends Task {
     List<Integer> subTasksId = new ArrayList<>();
-    List<Integer> incompletedSubTasksId = new ArrayList<>(); //С использованием этого поля рассчитывается статус эпика
+    List<Integer> incompleteSubTasksId = new ArrayList<>();
 
     public Epic(String taskName, String taskDescription, TaskStatus status) {
 
@@ -18,26 +18,32 @@ public class Epic extends Task {
 
     public void setSubTask(int newSubTaskId) {
         subTasksId.add(newSubTaskId);
-        incompletedSubTasksId.add(newSubTaskId);
+        incompleteSubTasksId.add(newSubTaskId);
     }
 
     public void completeSubTask(int subTaskId) {
-        incompletedSubTasksId.remove((Integer) subTaskId);
+        incompleteSubTasksId.remove((Integer) subTaskId);
     }
 
     public void removeSubTask(int subTaskId) {
         subTasksId.remove((Integer) subTaskId);
-        incompletedSubTasksId.remove((Integer) subTaskId);
+        incompleteSubTasksId.remove((Integer) subTaskId);
     }
 
     public void calculateStatus() {
-        if (subTasksId.size() == incompletedSubTasksId.size()) {
+        if (subTasksId.size() == incompleteSubTasksId.size()) {
             status = TaskStatus.NEW;
-        } else if (incompletedSubTasksId.isEmpty()) {
+        } else if (incompleteSubTasksId.isEmpty()) {
             status = TaskStatus.DONE;
         } else {
             status = TaskStatus.IN_PROGRESS;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Epic," + this.getTaskId() + "," + this.getTaskName() + "," + this.getTaskDescription() +
+                "," + this.getStatus() + "," + subTasksId.size();
     }
 
 }
