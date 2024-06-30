@@ -29,7 +29,7 @@ public class Task implements Cloneable {
         this.status = status;
         this.duration = duration;
     }
-    
+
     public int getTaskId() {
         return id;
     }
