@@ -39,4 +39,8 @@ public interface TaskManager {
     ArrayList<SubTask> getAllSubTasks(int epicId);
 
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
+
+    void checkFreeTime(Task task);
 }

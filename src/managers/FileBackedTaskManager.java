@@ -9,6 +9,9 @@ import tasks.TaskStatus;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private static String dataBase;
@@ -40,7 +43,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 String[] currentTask = uploadTasks.readLine().split(",");
                 switch (currentTask[0]) {
                     case "Task":
-                        Task uploadingTask = new Task(currentTask[2], currentTask[3], TaskStatus.valueOf(currentTask[4]));
+                        Task uploadingTask = new Task(currentTask[2], currentTask[3], TaskStatus.valueOf(currentTask[4]),
+                                Duration.parse(currentTask[5]));
+                        try {
+                            uploadingTask.setStartTime(LocalDateTime.parse(currentTask[6]));
+                            uploadingTask.calculateEndTime();
+                        } catch (Exception e) {
+                            uploadingTask.setStartTime(null);
+                        }
                         int uploadingTaskId = Integer.parseInt(currentTask[1]);
                         uploadingTask.setTaskId(uploadingTaskId);
                         ordinaryTasksMap.put(uploadingTaskId, uploadingTask);
@@ -55,15 +65,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         break;
                     case "Sub":
                         SubTask uploadingSub = new SubTask(currentTask[2], currentTask[3],
-                                TaskStatus.valueOf(currentTask[4]), Integer.parseInt(currentTask[5]));
+                                TaskStatus.valueOf(currentTask[4]), Integer.parseInt(currentTask[5]),
+                                Duration.parse(currentTask[6]));
+                        try {
+                            uploadingSub.setStartTime(LocalDateTime.parse(currentTask[7]));
+                            uploadingSub.calculateEndTime();
+                        } catch (Exception e) {
+                            uploadingSub.setStartTime(null);
+                        }
                         int uploadingSubId = Integer.parseInt(currentTask[1]);
                         uploadingSub.setTaskId(uploadingSubId);
                         subTasksMap.put(uploadingSubId, uploadingSub);
                         Epic currentMain = epicsMap.get(uploadingSub.getMainTaskId());
-                        currentMain.setSubTask(uploadingSubId);
-                        if (uploadingSub.getStatus() == TaskStatus.DONE) {
-                            currentMain.completeSubTask(uploadingSubId);
-                        }
+                        currentMain.setSubTask(uploadingSub);
                         taskCounter = ++uploadingSubId;
                 }
             }
