@@ -157,6 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
             checkFreeTime(task);
             prioritizedTasks.add(task);
         } catch (BusyTimeException e) {
+            System.out.println();
         }
     }
 
