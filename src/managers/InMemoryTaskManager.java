@@ -6,14 +6,21 @@ import tasks.SubTask;
 import tasks.Task;
 import tasks.TaskStatus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
     static int taskCounter = 0;
     static Map<Integer, Task> ordinaryTasksMap = new HashMap<>();
     static Map<Integer, Epic> epicsMap = new HashMap<>();
     static Map<Integer, SubTask> subTasksMap = new HashMap<>();
-    private InMemoryHistoryManager taskHistory = new InMemoryHistoryManager();
+    private final InMemoryHistoryManager taskHistory = new InMemoryHistoryManager();
     static Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(task -> task.getStartTime().get()));
 
     @Override
@@ -163,10 +170,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void checkFreeTime(Task newTask) {
         if (!prioritizedTasks.isEmpty() && newTask.getStartTime().isPresent()) {
-            Optional<Task> checkStartTask = getPrioritizedTasks().stream().filter(task -> task.getStartTime().get().isAfter(newTask.getStartTime()
-                    .get())).findFirst();
-            Optional<Task> checkEndTask = getPrioritizedTasks().stream().filter(task -> task.getEndTime().get().isAfter(newTask.getStartTime().get()))
-                    .findFirst();
+            Optional<Task> checkStartTask = getPrioritizedTasks().stream().filter(task -> task.getStartTime().isPresent())
+                    .filter(task -> task.getStartTime().get().isAfter(newTask.getStartTime().get())).findFirst();
+            Optional<Task> checkEndTask = getPrioritizedTasks().stream().filter(task -> task.getEndTime().isPresent())
+                    .filter(task -> task.getEndTime().get().isAfter(newTask.getStartTime().get())).findFirst();
             if ((checkStartTask.isPresent() &&
                     checkStartTask.get().getStartTime().get().isBefore(newTask.getEndTime().get())) ||
                     (checkEndTask.isPresent() && checkEndTask.get().getStartTime().get().isBefore(newTask.getEndTime().get()))) {
