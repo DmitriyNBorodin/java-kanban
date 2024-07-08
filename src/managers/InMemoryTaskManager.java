@@ -1,21 +1,27 @@
 package managers;
 
+import exceptions.BusyTimeException;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 import tasks.TaskStatus;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
     static int taskCounter = 0;
     static Map<Integer, Task> ordinaryTasksMap = new HashMap<>();
     static Map<Integer, Epic> epicsMap = new HashMap<>();
     static Map<Integer, SubTask> subTasksMap = new HashMap<>();
-    private InMemoryHistoryManager taskHistory = new InMemoryHistoryManager();
+    private final InMemoryHistoryManager taskHistory = new InMemoryHistoryManager();
+    static Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(task -> task.getStartTime().get()));
 
     @Override
     public ArrayList<Task> getListOfTasks() {
@@ -67,6 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addNewTask(Task task) {
         task.setTaskId(taskCounter);
         ordinaryTasksMap.put(taskCounter, task);
+        setPrioritizedTasks(task);
         taskCounter++;
     }
 
@@ -80,10 +87,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addNewSubTask(SubTask task) {
         task.setTaskId(taskCounter);
+        setPrioritizedTasks(task);
         subTasksMap.put(taskCounter, task);
         Epic currentMain = epicsMap.get(task.getMainTaskId());
-        currentMain.setSubTask(taskCounter);
-        currentMain.calculateStatus();
+        currentMain.setSubTask(task);
         taskCounter++;
     }
 
@@ -104,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasksMap.put(refreshingTaskId, task);
         Epic currentMain = epicsMap.get(mainTaskId);
         if (task.getStatus() == TaskStatus.DONE) {
-            currentMain.completeSubTask(refreshingTaskId);
+            currentMain.calculateStatus();
         }
         currentMain.calculateStatus();
     }
@@ -116,6 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         taskCounter = 0;
         taskHistory.cleanHistory();
+        prioritizedTasks.clear();
     }
 
 
@@ -123,15 +131,15 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeTaskById(int taskId) {
         ordinaryTasksMap.remove(taskId);
         if (epicsMap.containsKey(taskId)) {
-            for (int subTaskId : epicsMap.get(taskId).getSubTasksId()) {
-                subTasksMap.remove(subTaskId);
-                taskHistory.removeTask(subTaskId);
+            for (SubTask subTask : epicsMap.get(taskId).getSubTasks()) {
+                subTasksMap.remove(subTask.getTaskId());
+                taskHistory.removeTask(subTask.getTaskId());
             }
         }
         epicsMap.remove(taskId);
         if (subTasksMap.containsKey(taskId)) {
             int currentMainId = subTasksMap.get(taskId).getMainTaskId();
-            epicsMap.get(currentMainId).removeSubTask(taskId);
+            epicsMap.get(currentMainId).removeSubTaskById(taskId);
             epicsMap.get(currentMainId).calculateStatus();
         }
         subTasksMap.remove(taskId);
@@ -140,18 +148,40 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<SubTask> getAllSubTasks(int epicId) {
-        ArrayList<SubTask> subTasksList = new ArrayList<>();
-        for (int subTaskId : epicsMap.get(epicId).getSubTasksId()) {
-            subTasksList.add(subTasksMap.get(subTaskId));
-        }
-        return subTasksList;
+        return epicsMap.get(epicId).getSubTasks();
     }
 
     public List<Task> getHistory() {
         return taskHistory.getDefaultHistory();
     }
 
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
 
+    public void setPrioritizedTasks(Task task) {
+        if (task.getStartTime().isPresent()) try {
+            checkFreeTime(task);
+            prioritizedTasks.add(task);
+        } catch (BusyTimeException e) {
+            System.out.println();
+        }
+    }
+
+    public void checkFreeTime(Task newTask) {
+        if (!prioritizedTasks.isEmpty() && newTask.getStartTime().isPresent()) {
+            Optional<Task> checkStartTask = getPrioritizedTasks().stream().filter(task -> task.getStartTime().isPresent())
+                    .filter(task -> task.getStartTime().get().isAfter(newTask.getStartTime().get())).findFirst();
+            Optional<Task> checkEndTask = getPrioritizedTasks().stream().filter(task -> task.getEndTime().isPresent())
+                    .filter(task -> task.getEndTime().get().isAfter(newTask.getStartTime().get())).findFirst();
+            if ((checkStartTask.isPresent() &&
+                    checkStartTask.get().getStartTime().get().isBefore(newTask.getEndTime().get())) ||
+                    (checkEndTask.isPresent() && checkEndTask.get().getStartTime().get().isBefore(newTask.getEndTime().get()))) {
+                throw new BusyTimeException("Время, отведенное под эту задачу, уже занято.");
+            }
+        }
+    }
 }
+
 
 
