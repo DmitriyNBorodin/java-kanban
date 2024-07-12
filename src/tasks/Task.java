@@ -102,5 +102,4 @@ public class Task implements Cloneable {
             endTime = startTime.plus(duration);
         }
     }
-
 }
