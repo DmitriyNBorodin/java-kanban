@@ -26,7 +26,7 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return "Sub," + this.getTaskId() + "," + this.getTaskName() + "," + this.getTaskDescription() +
-                "," + this.getStatus() + "," + epicId + "," + getDuration() + "," + getStartTime().map(time -> time.toString()).orElse("null");
+                "," + this.getStatus() + "," + epicId + "," + getDuration().toMinutes() + "," + getStartTime().map(time -> time.toString()).orElse("null");
     }
 
 }

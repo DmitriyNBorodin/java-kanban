@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Task implements Cloneable {
-    private int id;
+    private Integer id;
     private String taskName;
     private String taskDescription;
     protected TaskStatus status;
@@ -20,7 +20,7 @@ public class Task implements Cloneable {
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
-        this.endTime = calculateEndTime();
+        calculateEndTime();
     }
 
     public Task(String taskName, String taskDescription, TaskStatus status, Duration duration) {
@@ -30,7 +30,7 @@ public class Task implements Cloneable {
         this.duration = duration;
     }
 
-    public int getTaskId() {
+    public Integer getTaskId() {
         return id;
     }
 
@@ -89,7 +89,7 @@ public class Task implements Cloneable {
 
     @Override
     public String toString() {
-        return "Task," + id + "," + taskName + "," + taskDescription + "," + status + "," + duration + "," + startTime;
+        return "Task," + id + "," + taskName + "," + taskDescription + "," + status + "," + duration.toMinutes() + "," + startTime;
     }
 
     @Override
@@ -97,7 +97,10 @@ public class Task implements Cloneable {
         return (Task) super.clone();
     }
 
-    public LocalDateTime calculateEndTime() {
-        return startTime.plus(duration);
+    public void calculateEndTime() {
+        if (startTime != null){
+            endTime = startTime.plus(duration);
+        }
     }
+
 }

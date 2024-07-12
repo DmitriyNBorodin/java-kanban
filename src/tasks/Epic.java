@@ -1,6 +1,7 @@
 package tasks;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -55,6 +56,6 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic," + this.getTaskId() + "," + this.getTaskName() + "," + this.getTaskDescription() +
-                "," + this.getStatus() + "," + subTasks.size() + "," + this.getDuration() + "," + this.getStartTime();
+                "," + this.getStatus() + "," + subTasks.size() + "," + this.getDuration().toMinutes() + "," + this.getStartTime();
     }
 }
