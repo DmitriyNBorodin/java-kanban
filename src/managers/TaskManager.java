@@ -32,7 +32,7 @@ public interface TaskManager {
 
     void refreshSubTask(SubTask task);
 
-    void removeTaskById(int taskId);
+    boolean removeTaskById(int taskId);
 
     void removeAllTasks();
 
