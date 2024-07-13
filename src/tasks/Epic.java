@@ -55,6 +55,6 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic," + this.getTaskId() + "," + this.getTaskName() + "," + this.getTaskDescription() +
-                "," + this.getStatus() + "," + subTasks.size() + "," + this.getDuration() + "," + this.getStartTime();
+                "," + this.getStatus() + "," + subTasks.size() + "," + this.getDuration().toMinutes() + "," + this.getStartTime();
     }
 }

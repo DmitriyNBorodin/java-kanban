@@ -49,7 +49,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 switch (currentTask[0]) {
                     case "Task":
                         Task uploadingTask = new Task(currentTask[2], currentTask[3], TaskStatus.valueOf(currentTask[4]),
-                                Duration.parse(currentTask[5]));
+                                Duration.ofMinutes(Integer.parseInt(currentTask[5])));
                         try {
                             uploadingTask.setStartTime(LocalDateTime.parse(currentTask[6]));
                             uploadingTask.calculateEndTime();
@@ -71,7 +71,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     case "Sub":
                         SubTask uploadingSub = new SubTask(currentTask[2], currentTask[3],
                                 TaskStatus.valueOf(currentTask[4]), Integer.parseInt(currentTask[5]),
-                                Duration.parse(currentTask[6]));
+                                Duration.ofMinutes(Integer.parseInt(currentTask[6])));
                         try {
                             uploadingSub.setStartTime(LocalDateTime.parse(currentTask[7]));
                             uploadingSub.calculateEndTime();
