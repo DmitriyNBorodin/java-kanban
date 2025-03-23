@@ -24,11 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getListOfTasks() {
-        ArrayList<Task> listOfTasks = new ArrayList<>();
-        for (int id : ordinaryTasksMap.keySet()) {
-            listOfTasks.add(ordinaryTasksMap.get(id));
-        }
-        return listOfTasks;
+        return new ArrayList<>(ordinaryTasksMap.values());
     }
 
     @Override
@@ -181,24 +177,26 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void setPrioritizedTasks(Task task) {
-        if (task.getStartTime().isPresent()) try {
-            prioritizedTasks.remove(task);
-            checkFreeTime(task);
-            prioritizedTasks.add(task);
-        } catch (BusyTimeException e) {
-            throw e;
-        }
+        if (task.getStartTime().isPresent())
+            try {
+                checkFreeTime(task);
+                prioritizedTasks.add(task);
+            } catch (BusyTimeException e) {
+                throw e;
+            }
     }
 
     public void checkFreeTime(Task newTask) {
         if (!prioritizedTasks.isEmpty() && newTask.getStartTime().isPresent()) {
             Optional<Task> checkStartTask = getPrioritizedTasks().stream().filter(task -> task.getStartTime().isPresent())
+                    .filter(task -> !task.equals(newTask))
                     .filter(task -> task.getStartTime().get().isAfter(newTask.getStartTime().get())).findFirst();
             Optional<Task> checkEndTask = getPrioritizedTasks().stream().filter(task -> task.getEndTime().isPresent())
+                    .filter(task -> !task.equals(newTask))
                     .filter(task -> task.getEndTime().get().isAfter(newTask.getStartTime().get())).findFirst();
             if ((checkStartTask.isPresent() &&
-                    checkStartTask.get().getStartTime().get().isBefore(newTask.getEndTime().get())) ||
-                    (checkEndTask.isPresent() && checkEndTask.get().getStartTime().get().isBefore(newTask.getEndTime().get()))) {
+                 checkStartTask.get().getStartTime().get().isBefore(newTask.getEndTime().get())) ||
+                (checkEndTask.isPresent() && checkEndTask.get().getStartTime().get().isBefore(newTask.getEndTime().get()))) {
                 throw new BusyTimeException("Время, отведенное под эту задачу, уже занято.");
             }
         }

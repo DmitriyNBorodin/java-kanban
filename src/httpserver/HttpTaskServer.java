@@ -3,7 +3,6 @@ package httpserver;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
-import managers.ManagerUtils;
 import managers.TaskManager;
 
 import java.io.IOException;
@@ -26,13 +25,6 @@ public class HttpTaskServer {
         server.createContext("/epics", new EpicsHandler(gson, manager));
         server.createContext("/history", new HistoryHandler(gson, manager));
         server.createContext("/prioritized", new PrioritizedHandler(gson, manager));
-    }
-
-    public static void main(String[] args) throws IOException {
-        TaskManager manager = ManagerUtils.getDefault();
-        HttpTaskServer taskServer = new HttpTaskServer(manager);
-        taskServer.activation();
-        System.out.println("HTTP-сервер запущен");
     }
 
     public void activation() {

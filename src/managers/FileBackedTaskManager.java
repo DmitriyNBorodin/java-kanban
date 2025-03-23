@@ -22,7 +22,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private static String dataBase;
 
     public FileBackedTaskManager(String dataBase) {
-        this.dataBase = dataBase;
+        FileBackedTaskManager.dataBase = dataBase;
     }
 
     public void save() throws ManagerSaveException {
